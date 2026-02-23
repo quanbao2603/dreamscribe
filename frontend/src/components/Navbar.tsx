@@ -1,10 +1,30 @@
-import { MenuIcon, XIcon } from "lucide-react";
+import { MenuIcon, XIcon, Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { navLinks } from "../data/navLinks";
+import { navLinks } from "../data/NavLinks";
 
 export default function Navbar() {
     const [openMobileMenu, setOpenMobileMenu] = useState(false);
+    
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) return savedTheme === 'dark';
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        return false;
+    });
+
+    useEffect(() => {
+        const root = document.documentElement;
+        if (isDarkMode) {
+            root.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            root.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }, [isDarkMode]);
 
     useEffect(() => {
         if (openMobileMenu) {
@@ -15,47 +35,79 @@ export default function Navbar() {
     }, [openMobileMenu]);
 
     return (
-        <nav className={`flex items-center justify-between fixed z-50 top-0 w-full px-6 md:px-16 lg:px-24 xl:px-32 py-4 ${openMobileMenu ? '' : 'backdrop-blur-md bg-white/70'}`}>
-            {/* Logo */}
-            <Link to="/" className="text-2xl font-bold text-purple-600 tracking-tight">
-                DreamScribe
-            </Link>
+        <nav className={`fixed z-100 top-0 w-full px-6 md:px-16 lg:px-24 py-5 transition-all duration-300 border-b ${
+            openMobileMenu 
+            ? 'bg-[#080313] border-transparent' 
+            : 'bg-transparent backdrop-blur-md border-white/5'
+        }`}>
+            <div className="flex items-center justify-between mx-auto max-w-7xl">
+                
+                {/* Khu vực 1: Logo */}
+                <Link to="/" className="relative z-50 text-2xl font-extrabold tracking-tighter text-white">
+                    DreamScribe
+                </Link>
 
-            {/* Menu Desktop */}
-            <div className="hidden items-center md:gap-8 lg:gap-9 md:flex lg:pl-20">
+                {/* Khu vực 2: Menu Desktop */}
+                <div className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+                    {navLinks.map((link) => (
+                        <Link 
+                            key={link.name} 
+                            to={link.href} 
+                            className="text-sm font-medium text-slate-300 hover:text-purple-400 transition-colors"
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                </div>
+
+                {/* Khu vực 3: Các nút bấm bên phải */}
+                <div className="flex items-center gap-3 md:gap-5 relative z-50">
+                    <button 
+                        onClick={() => setIsDarkMode(!isDarkMode)}
+                        className="p-2 rounded-full text-slate-400 hover:bg-white/5 transition-colors"
+                        aria-label="Toggle Dark Mode"
+                    >
+                        {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                    </button>
+
+                    {/* ✅ Nút Login Desktop: Đã thêm Link dẫn đến /auth/login */}
+                    <Link 
+                        to="/auth/login" 
+                        className="hidden md:block px-6 py-2 bg-purple-600 hover:bg-purple-500 transition-all text-white rounded-lg font-semibold text-sm shadow-lg shadow-purple-500/20 text-center"
+                    >
+                        Login
+                    </Link>
+
+                    <button 
+                        onClick={() => setOpenMobileMenu(!openMobileMenu)} 
+                        className="md:hidden p-1 text-white"
+                    >
+                        {openMobileMenu ? <XIcon size={26} /> : <MenuIcon size={26} />}
+                    </button>
+                </div>
+            </div>
+
+            {/* Menu Mobile */}
+            <div className={`fixed inset-0 top-18.25 h-screen flex flex-col px-6 py-10 gap-8 text-xl font-semibold bg-[#080313]/95 backdrop-blur-xl md:hidden transition-transform duration-500 ease-in-out ${openMobileMenu ? "translate-x-0" : "translate-x-full"}`}>
                 {navLinks.map((link) => (
-                    <Link key={link.name} to={link.href} className="font-medium hover:text-purple-600 transition-colors">
+                    <Link 
+                        key={link.name} 
+                        to={link.href} 
+                        onClick={() => setOpenMobileMenu(false)}
+                        className="text-slate-200 hover:text-purple-400 border-b border-white/5 pb-4"
+                    >
                         {link.name}
                     </Link>
                 ))}
-            </div>
-
-            {/* Menu Mobile (Hiển thị khi bấm nút hamburger trên điện thoại) */}
-            <div className={`fixed inset-0 flex flex-col items-center justify-center gap-6 text-lg font-medium bg-white/95 backdrop-blur-md md:hidden transition duration-300 ${openMobileMenu ? "translate-x-0" : "-translate-x-full"}`}>
-                {navLinks.map((link) => (
-                    <Link key={link.name} to={link.href} onClick={() => setOpenMobileMenu(false)}>
-                        {link.name}
-                    </Link>
-                ))}
-                <button className="px-6 py-2 border border-purple-600 text-purple-600 rounded-md">
-                    Đăng nhập
-                </button>
-                <button className="aspect-square size-10 p-1 items-center justify-center bg-purple-600 hover:bg-purple-700 transition text-white rounded-md flex" onClick={() => setOpenMobileMenu(false)}>
-                    <XIcon />
-                </button>
-            </div>
-
-            {/* Nút bấm bên phải Desktop */}
-            <div className="flex items-center gap-4">
-                <button className="hidden md:block hover:bg-purple-50 transition px-4 py-2 border border-purple-600 text-purple-600 rounded-md font-medium">
-                    Đăng nhập
-                </button>
-                <button className="hidden md:block px-4 py-2 bg-purple-600 hover:bg-purple-700 transition text-white rounded-md font-medium">
-                    Bắt đầu ngay
-                </button>
-                <button onClick={() => setOpenMobileMenu(!openMobileMenu)} className="md:hidden text-slate-800">
-                    <MenuIcon size={26} className="active:scale-90 transition" />
-                </button>
+                
+                {/* ✅ Nút Login Mobile: Đã thêm Link dẫn đến /auth/login */}
+                <Link 
+                    to="/auth/login"
+                    onClick={() => setOpenMobileMenu(false)}
+                    className="w-full mt-4 py-4 bg-purple-600 text-white rounded-xl font-bold text-center"
+                >
+                    Login
+                </Link>
             </div>
         </nav>
     );

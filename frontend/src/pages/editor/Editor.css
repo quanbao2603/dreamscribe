@@ -1,0 +1,132 @@
+/* ==========================================================================
+   LAYOUT CHÍNH
+   ========================================================================== */
+   .editor-layout {
+    display: flex;
+    /* Trừ đi chiều cao Navbar (70px) */
+    height: calc(100vh - 70px); 
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    margin-top: 70px; 
+    background-color: transparent;
+    z-index: 10;
+}
+
+/* ==========================================================================
+   SIDEBAR
+   ========================================================================== */
+.editor-sidebar {
+    width: 280px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.02);
+    /* Hiệu ứng kính mờ chuẩn (Sửa lỗi backdrop-blur) */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    z-index: 20;
+    transition: all 0.3s ease;
+}
+
+/* Menu điều hướng */
+.editor-sidebar nav {
+    flex: none; 
+    padding: 0 1rem;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* --- PHẦN TINH CHỈNH KHOẢNG CÁCH --- */
+.sidebar-footer-container {
+    display: block; 
+    width: 100%;
+    
+    /* BẠN CHỈNH KHOẢNG CÁCH TẠI ĐÂY */
+    margin-top: 100px; 
+}
+
+.sidebar-footer {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.user-profile-box {
+    padding: 8px 12px !important;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    margin-bottom: 4px !important;
+}
+
+/* Đẩy khoảng trống thừa xuống cuối */
+.sidebar-spacer {
+    flex: 1;
+}
+
+/* ==========================================================================
+   VÙNG NỘI DUNG (CONTENT)
+   ========================================================================== */
+.editor-content {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    padding: 32px; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tối ưu Scrollbar */
+.editor-content::-webkit-scrollbar,
+.editor-sidebar nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.editor-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.editor-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.editor-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.3);
+}
+
+/* Panel kính mờ chứa nội dung (Outlet) */
+.glass-panel {
+    position: relative;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .editor-sidebar {
+        width: 80px;
+    }
+    .sidebar-item span, 
+    .user-profile-box .flex-1, 
+    .sidebar-footer button span {
+        display: none; 
+    }
+    .sidebar-footer-container {
+        margin-top: 50px; /* Giảm margin trên tablet cho gọn */
+    }
+}
