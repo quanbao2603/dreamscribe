@@ -30,7 +30,7 @@ export default function Footer() {
                     
                     {/* Cột 1: Điều hướng */}
                     <div>
-                        <h2 className="font-semibold text-slate-200 mb-6 uppercase text-xs tracking-widest">Liên kết</h2>
+                        <h2 className="font-semibold text-slate-200 mb-6 uppercase text-xs tracking-widest">Resources</h2>
                         <ul className="space-y-4">
                             {navLinks.map((link, index) => (
                                 <li key={index}>
@@ -44,7 +44,7 @@ export default function Footer() {
 
                     {/* Cột 2: Thông tin liên hệ */}
                     <div>
-                        <h2 className="font-semibold text-slate-200 mb-6 uppercase text-xs tracking-widest">Liên hệ</h2>
+                        <h2 className="font-semibold text-slate-200 mb-6 uppercase text-xs tracking-widest">Contact</h2>
                         <ul className="space-y-4">
                             <li>
                                 <a href="https://www.facebook.com/SUGirl.Bae.2201" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-400 hover:text-purple-400 transition-all">

@@ -25,13 +25,19 @@ export default function Editor() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Danh sách Menu dựa trên file NavLinks.js
+  // Danh sách Menu đã được sắp xếp lại theo yêu cầu
   const menuItems = [
     { 
         id: 'dashboard', 
         name: 'Tổng quan', 
         href: editorLinks.root, 
         icon: <LayoutDashboard size={18} /> 
+    },
+    { 
+        id: 'api-key', 
+        name: 'Cấu hình AI', 
+        href: editorLinks.apikey, 
+        icon: <Key size={18} /> 
     },
     { 
         id: 'new-story', 
@@ -50,13 +56,7 @@ export default function Editor() {
         name: 'Nhập dữ liệu', 
         href: editorLinks.import, 
         icon: <Upload size={18} /> 
-    },
-    { 
-        id: 'api-key', 
-        name: 'Cấu hình AI', 
-        href: editorLinks.apikey, 
-        icon: <Key size={18} /> 
-    },
+    }
   ];
 
   const handleLogout = () => {
@@ -112,7 +112,7 @@ export default function Editor() {
           <div className="sidebar-footer">
             {/* Box Profile User */}
             <div className="user-profile-box flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg">
+              <div className="w-9 h-9 rounded-full bg-linear-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg">
                   <User size={18} className="text-white" />
               </div>
               <div className="flex-1 overflow-hidden">
