@@ -1,9 +1,5 @@
-/* ==========================================================================
-   LAYOUT CHÍNH
-   ========================================================================== */
-   .editor-layout {
+    .editor-layout {
     display: flex;
-    /* Trừ đi chiều cao Navbar (70px) */
     height: calc(100vh - 70px); 
     width: 100vw;
     overflow: hidden;
@@ -13,14 +9,10 @@
     z-index: 10;
 }
 
-/* ==========================================================================
-   SIDEBAR
-   ========================================================================== */
 .editor-sidebar {
     width: 280px;
     height: 100%;
     background: rgba(255, 255, 255, 0.02);
-    /* Hiệu ứng kính mờ chuẩn (Sửa lỗi backdrop-blur) */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
@@ -30,7 +22,6 @@
     transition: all 0.3s ease;
 }
 
-/* Menu điều hướng */
 .editor-sidebar nav {
     flex: none; 
     padding: 0 1rem;
@@ -46,12 +37,9 @@
     transition: all 0.2s ease;
 }
 
-/* --- PHẦN TINH CHỈNH KHOẢNG CÁCH --- */
 .sidebar-footer-container {
     display: block; 
     width: 100%;
-    
-    /* BẠN CHỈNH KHOẢNG CÁCH TẠI ĐÂY */
     margin-top: 100px; 
 }
 
@@ -67,14 +55,10 @@
     margin-bottom: 4px !important;
 }
 
-/* Đẩy khoảng trống thừa xuống cuối */
 .sidebar-spacer {
     flex: 1;
 }
 
-/* ==========================================================================
-   VÙNG NỘI DUNG (CONTENT)
-   ========================================================================== */
 .editor-content {
     flex: 1;
     height: 100%;
@@ -84,7 +68,6 @@
     flex-direction: column;
 }
 
-/* Tối ưu Scrollbar */
 .editor-content::-webkit-scrollbar,
 .editor-sidebar nav::-webkit-scrollbar {
     width: 4px;
@@ -103,7 +86,6 @@
     background: rgba(139, 92, 246, 0.3);
 }
 
-/* Panel kính mờ chứa nội dung (Outlet) */
 .glass-panel {
     position: relative;
     width: 100%;
@@ -114,9 +96,6 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* ==========================================================================
-   RESPONSIVE
-   ========================================================================== */
 @media (max-width: 1024px) {
     .editor-sidebar {
         width: 80px;
@@ -127,6 +106,6 @@
         display: none; 
     }
     .sidebar-footer-container {
-        margin-top: 50px; /* Giảm margin trên tablet cho gọn */
+        margin-top: 50px;
     }
 }

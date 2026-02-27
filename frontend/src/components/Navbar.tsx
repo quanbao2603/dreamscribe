@@ -42,12 +42,10 @@ export default function Navbar() {
         }`}>
             <div className="flex items-center justify-between mx-auto max-w-7xl">
                 
-                {/* Khu vực 1: Logo */}
                 <Link to="/" className="relative z-50 text-2xl font-extrabold tracking-tighter text-white">
                     DreamScribe
                 </Link>
 
-                {/* Khu vực 2: Menu Desktop */}
                 <div className="hidden md:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
                     {navLinks.map((link) => (
                         <Link 
@@ -60,7 +58,6 @@ export default function Navbar() {
                     ))}
                 </div>
 
-                {/* Khu vực 3: Các nút bấm bên phải */}
                 <div className="flex items-center gap-3 md:gap-5 relative z-50">
                     <button 
                         onClick={() => setIsDarkMode(!isDarkMode)}
@@ -70,7 +67,6 @@ export default function Navbar() {
                         {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
 
-                    {/* ✅ Nút Login Desktop: Đã thêm Link dẫn đến /auth/login */}
                     <Link 
                         to="/auth/login" 
                         className="hidden md:block px-6 py-2 bg-purple-600 hover:bg-purple-500 transition-all text-white rounded-lg font-semibold text-sm shadow-lg shadow-purple-500/20 text-center"
@@ -100,7 +96,6 @@ export default function Navbar() {
                     </Link>
                 ))}
                 
-                {/* ✅ Nút Login Mobile: Đã thêm Link dẫn đến /auth/login */}
                 <Link 
                     to="/auth/login"
                     onClick={() => setOpenMobileMenu(false)}

@@ -5,7 +5,6 @@ import {
 } from 'lucide-react';
 
 export default function NewStory() {
-  // State quản lý dữ liệu form
   const [formData, setFormData] = useState({
     title: '',
     theme: '',
@@ -55,7 +54,6 @@ export default function NewStory() {
 
       <div className="space-y-8">
         
-        {/* PHẦN 1: THIẾT LẬP CỐT LÕI */}
         <div className="bg-black/20 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
             <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
@@ -84,7 +82,6 @@ export default function NewStory() {
           </div>
         </div>
 
-        {/* PHẦN 2: NHÂN VẬT CHÍNH */}
         <div className="bg-black/20 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
             <div className="flex items-center gap-3">
@@ -120,7 +117,6 @@ export default function NewStory() {
           </div>
         </div>
 
-        {/* PHẦN 3: THIẾT LẬP NÂNG CAO */}
         <div className="bg-black/20 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/5">
             <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400">
@@ -147,7 +143,6 @@ export default function NewStory() {
               <textarea name="aiInstructions" value={formData.aiInstructions} onChange={handleChange} rows={2} className="w-full p-3.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-purple-500 transition-all resize-none"></textarea>
             </div>
             
-            {/* Checkboxes */}
             <div className="md:col-span-2 flex flex-wrap gap-6 mt-2">
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div className="relative flex items-center justify-center w-5 h-5 rounded border border-white/20 bg-white/5 group-hover:border-purple-500 transition-colors">
@@ -172,7 +167,6 @@ export default function NewStory() {
           </div>
         </div>
 
-        {/* PHẦN 4: KIẾN TẠO THẾ GIỚI */}
         <div className="bg-black/20 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
             <div className="flex items-center gap-3">
@@ -223,10 +217,8 @@ export default function NewStory() {
           </div>
         </div>
 
-        {/* PHẦN 5: ACTION BUTTONS (FOOTER) */}
         <div className="flex flex-col gap-4 mt-8 pt-8 border-t border-white/10">
           
-          {/* Hàng nút phụ */}
           <div className="flex items-center justify-center gap-4">
             <button className="flex items-center gap-2 px-6 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl transition-colors font-medium">
               <ArrowLeft size={16} /> Quay Lại
@@ -236,7 +228,6 @@ export default function NewStory() {
             </button>
           </div>
 
-          {/* Hàng nút chính */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
              <button className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-8 py-4 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl font-bold shadow-lg shadow-purple-500/25 transition-all">
               <Sparkles size={18} /> AI Tinh Chỉnh
@@ -247,7 +238,7 @@ export default function NewStory() {
           </div>
 
         </div>
-
+        
       </div>
     </div>
   );

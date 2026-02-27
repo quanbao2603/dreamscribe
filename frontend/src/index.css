@@ -9,7 +9,6 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    /* Tôi đã đổi màu nền tối mặc định của body thành màu xanh đen sâu thẳm giống ảnh mẫu của bạn */
     @apply bg-white text-slate-800 dark:bg-[#080313] dark:text-slate-200 antialiased transition-colors duration-300;
 }
 

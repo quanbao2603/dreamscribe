@@ -46,17 +46,15 @@ export default function Login() {
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-      {/* Overlay: Mờ nền phía sau */}
+  
       <div 
         className="absolute inset-0 bg-[#080313]/60 backdrop-blur-md" 
         onClick={() => navigate("/", { replace: true })}
       />
 
-      {/* Modal Container */}
       <div className="relative z-10 w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl">
         <div className="grid grid-cols-1 md:grid-cols-2">
           
-          {/* Left Visual Area */}
           <div className="relative hidden md:block overflow-hidden border-r border-white/5">
             <img
               src={authVisual}
@@ -74,7 +72,6 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Right Form Area */}
           <div className="relative p-8 md:p-12">
             <button
               onClick={() => navigate("/", { replace: true })}
@@ -94,7 +91,6 @@ export default function Login() {
             </div>
 
             <div className="space-y-5">
-              {/* Email Input */}
               <div className="space-y-2">
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">Email</label>
                 <input
@@ -110,7 +106,6 @@ export default function Login() {
                 />
               </div>
 
-              {/* Password Input */}
               <div className="space-y-2">
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">Mật khẩu</label>
                 <div className="relative">
@@ -135,7 +130,6 @@ export default function Login() {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 onClick={handleSubmit}
                 disabled={!canSubmit}
@@ -155,7 +149,6 @@ export default function Login() {
                 <div className="h-px flex-1 bg-white/5" />
               </div>
 
-              {/* Google Button */}
               <button
                 className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-white/10"
                 onClick={() => window.location.href = "http://localhost:8080/auth/google"}

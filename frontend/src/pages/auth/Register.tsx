@@ -10,20 +10,15 @@ function cn(...classes: Array<string | false | undefined | null>) {
 export default function Register() {
   const navigate = useNavigate();
   const [touched, setTouched] = useState(false);
-  
-  // State quản lý form
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  // Logic kiểm tra hợp lệ
   const nameOk = useMemo(() => fullName.trim().length >= 2, [fullName]);
   const emailOk = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()), [email]);
   const passOk = useMemo(() => password.length >= 6, [password]);
   const canSubmit = nameOk && emailOk && passOk;
 
-  // Đóng modal bằng phím Esc
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") navigate("/", { replace: true });
@@ -36,22 +31,18 @@ export default function Register() {
     setTouched(true);
     if (!canSubmit) return;
     console.log("REGISTER SUCCESS", { fullName, email, password });
-    navigate("/auth/login"); // Đăng ký xong chuyển sang trang đăng nhập
+    navigate("/auth/login");
   };
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-      {/* Overlay mờ nền */}
       <div 
         className="absolute inset-0 bg-[#080313]/60 backdrop-blur-md" 
         onClick={() => navigate("/", { replace: true })}
       />
 
-      {/* Modal Container */}
       <div className="relative z-10 w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl transition-all">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          
-          {/* Left Visual Area (Giống Login) */}
           <div className="relative hidden md:block overflow-hidden border-r border-white/5">
             <img
               src={authVisual}
@@ -69,7 +60,6 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Right Form Area */}
           <div className="relative p-8 md:p-12 bg-white/5 md:bg-transparent">
             <button
               onClick={() => navigate("/", { replace: true })}
@@ -89,7 +79,6 @@ export default function Register() {
             </div>
 
             <div className="space-y-4">
-              {/* Họ và tên */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">Họ và tên</label>
                 <div className="relative">
@@ -107,7 +96,6 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Email */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">Email</label>
                 <div className="relative">
@@ -125,7 +113,6 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Mật khẩu */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 ml-1">Mật khẩu</label>
                 <div className="relative">
@@ -150,7 +137,6 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 onClick={handleSubmit}
                 disabled={!canSubmit}

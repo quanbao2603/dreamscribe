@@ -10,13 +10,10 @@ import {
   User,
   Settings
 } from 'lucide-react';
-
-// Import CSS và dữ liệu định tuyến
 import "../../layout/main.css";
 import "./Editor.css";
 import { editorLinks } from "../../data/NavLinks";
 
-// Hàm hỗ trợ nối class
 function cn(...classes: Array<string | false | undefined | null>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -24,8 +21,6 @@ function cn(...classes: Array<string | false | undefined | null>) {
 export default function Editor() {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Danh sách Menu đã được sắp xếp lại theo yêu cầu
   const menuItems = [
     { 
         id: 'dashboard', 
@@ -63,20 +58,17 @@ export default function Editor() {
     navigate("/");
   };
 
-  // Hàm phụ trợ lấy thông tin tab đang mở
   const itemActive = () => menuItems.find(i => i.href === location.pathname);
 
   return (
     <div className="editor-layout home-container min-h-screen">
       
-      {/* 1. BACKGROUND BLOBS */}
       <div className="background-container">
         <div className="blob blob-purple animate-blob"></div>
         <div className="blob blob-magenta animate-blob animation-delay-2000"></div>
         <div className="blob blob-blue animate-blob animation-delay-4000"></div>
       </div>
 
-      {/* 2. SIDEBAR (THANH CHỨC NĂNG BÊN TRÁI) */}
       <aside className="editor-sidebar">
         <div className="p-8 mb-4">
           <Link to="/" className="text-2xl font-black tracking-tighter text-white">
@@ -84,7 +76,6 @@ export default function Editor() {
           </Link>
         </div>
 
-        {/* Danh sách Menu chính */}
         <nav className="space-y-2">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.href;
@@ -107,10 +98,8 @@ export default function Editor() {
           })}
         </nav>
 
-        {/* CỤM FOOTER MỚI: Bọc trong container để margin-top trong CSS hoạt động */}
         <div className="sidebar-footer-container">
           <div className="sidebar-footer">
-            {/* Box Profile User */}
             <div className="user-profile-box flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-linear-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg">
                   <User size={18} className="text-white" />
@@ -122,7 +111,6 @@ export default function Editor() {
               <Settings size={14} className="text-slate-500 hover:text-white cursor-pointer" />
             </div>
             
-            {/* Nút Đăng xuất */}
             <button 
               onClick={handleLogout}
               className="w-full sidebar-item rounded-xl text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-colors mt-2"
@@ -133,14 +121,11 @@ export default function Editor() {
           </div>
         </div>
 
-        {/* Hứng khoảng trống thừa xuống đáy */}
         <div className="sidebar-spacer"></div>
       </aside>
 
-      {/* 3. VÙNG NỘI DUNG CHÍNH BÊN PHẢI */}
       <main className="editor-content flex-1 overflow-y-auto">
         
-        {/* Thanh tiêu đề động */}
         <header className="flex justify-between items-end mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
           <div>
             <h2 className="text-[10px] font-bold text-purple-500 uppercase tracking-[0.3em] mb-1">
@@ -161,7 +146,6 @@ export default function Editor() {
           </div>
         </header>
 
-        {/* Khung nội dung Glassmorphism */}
         <div className="relative">
            <div className="glass-panel min-h-[calc(100vh-220px)] p-8 rounded-[2.5rem]">
               <Outlet />
