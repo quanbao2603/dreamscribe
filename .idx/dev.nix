@@ -13,7 +13,10 @@
     # pkgs.nodePackages.nodemon
   ];
   # Sets environment variables in the workspace
-  env = {};
+  env = {
+    PRISMA_CLI_QUERY_ENGINE_TYPE = "binary";
+    PRISMA_CLIENT_ENGINE_TYPE = "binary";
+  };
   idx = {
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
     extensions = [
