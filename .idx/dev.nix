@@ -27,16 +27,16 @@
     previews = {
       enable = true;
       previews = {
-        # web = {
-        #   # Example: run "npm run dev" with PORT set to IDX's defined port for previews,
-        #   # and show it in IDX's web preview panel
-        #   command = ["npm" "run" "dev"];
-        #   manager = "web";
-        #   env = {
-        #     # Environment variables to set for your server
-        #     PORT = "$PORT";
-        #   };
-        # };
+        web = {
+          # Chạy frontend ở cổng mặc định của IDX
+          command = ["npm" "--prefix" "frontend" "run" "dev" "--" "--port" "$PORT" "--host" "0.0.0.0"];
+          manager = "web";
+        };
+        backend = {
+          # Chạy backend ở cổng 8080
+          command = ["npm" "--prefix" "backend" "run" "dev" "--" "--port" "8080" "--host" "0.0.0.0"];
+          manager = "web";
+        };
       };
     };
     # Workspace lifecycle hooks

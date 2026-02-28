@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, X } from "lucide-react";
 import authVisual from "../../assets/login.png";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../../firebase";
 
 function cn(...classes: Array<string | false | undefined | null>) {
   return classes.filter(Boolean).join(" ");
@@ -40,13 +42,34 @@ export default function Login() {
   const handleSubmit = () => {
     setTouched(true);
     if (!canSubmit) return;
-    console.log("LOGIN SUCCESS", { email, password });
     navigate("/");
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const idToken = await result.user.getIdToken();
+
+      const response = await fetch("/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        navigate("/test/auth", { state: { user: data.user } });
+      } else {
+        console.error(data.error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-  
       <div 
         className="absolute inset-0 bg-[#080313]/60 backdrop-blur-md" 
         onClick={() => navigate("/", { replace: true })}
@@ -151,7 +174,7 @@ export default function Login() {
 
               <button
                 className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-white/10"
-                onClick={() => window.location.href = "http://localhost:8080/auth/google"}
+                onClick={handleGoogleLogin}
               >
                 <GoogleIcon />
                 Tiếp tục với Google

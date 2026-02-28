@@ -15,6 +15,7 @@ model User {
   displayName String?
   photoURL    String?
   role        String   @default("user")
+  provider    String   @default("password")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   stories     Story[]

@@ -10,11 +10,11 @@ import Import from "./pages/editor/sections/Import";
 import LoadSaved from "./pages/editor/sections/LoadSaved";
 import NewStory from "./pages/editor/sections/NewStory";
 import { navLinks, authLinks, editorLinks } from "./data/NavLinks";
+import AuthTest from "./pages/test/Auth";
 
 export default function App() {
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-[#080313] transition-colors duration-500">
-
       <Navbar />
       
       <main className="grow">
@@ -36,6 +36,8 @@ export default function App() {
             path={navLinks[1].href} 
             element={<div className="pt-32 text-center text-white">Trang Tài Liệu đang phát triển...</div>} 
           />
+
+          <Route path="/test/auth" element={<AuthTest />} />
 
           <Route 
             path="*" 
