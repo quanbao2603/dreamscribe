@@ -36,18 +36,33 @@ export default function Register() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [navigate]);
 
-  const handleRequestOTP = () => {
+  const handleRequestOTP = async () => {
     setTouched(true);
     if (!canSubmitInfo) return;
     
     setIsSubmitting(true);
-    console.log("SENDING OTP TO", email);
     
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, fullName, password })
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        setStep(2);
+        setTimeout(() => otpRefs.current[0]?.focus(), 100);
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Lỗi:", error);
+      alert("Lỗi kết nối đến máy chủ.");
+    } finally {
       setIsSubmitting(false);
-      setStep(2);
-      setTimeout(() => otpRefs.current[0]?.focus(), 100);
-    }, 800);
+    }
   };
 
   const handleOtpChange = (index: number, value: string) => {
@@ -68,16 +83,34 @@ export default function Register() {
     }
   };
 
-  const handleVerifyOTP = () => {
+  const handleVerifyOTP = async () => {
     if (!canSubmitOTP) return;
     
     setIsSubmitting(true);
     const otpCode = otp.join("");
-    console.log("VERIFYING OTP", otpCode, "FOR", { fullName, email, password });
-
-    setTimeout(() => {
-      navigate("/auth/login");
-    }, 1000);
+    
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp: otpCode })
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        navigate("/auth/login");
+      } else {
+        alert(data.error);
+        setOtp(["", "", "", "", "", ""]);
+        otpRefs.current[0]?.focus();
+      }
+    } catch (error) {
+      console.error("Lỗi:", error);
+      alert("Lỗi kết nối đến máy chủ.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
