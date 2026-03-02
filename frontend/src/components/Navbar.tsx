@@ -1,4 +1,4 @@
-import { MenuIcon, XIcon, Moon, Sun, LogOut } from "lucide-react";
+import { MenuIcon, XIcon, Moon, Sun, LogOut, User, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { navLinks } from "../data/NavLinks";
@@ -6,7 +6,8 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
     const [openMobileMenu, setOpenMobileMenu] = useState(false);
-    const { user, logout } = useAuth(); // Lấy thông tin user từ Context
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Thêm state quản lý Dropdown
+    const { user, logout } = useAuth();
     
     const [isDarkMode, setIsDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -71,8 +72,12 @@ export default function Navbar() {
 
                     {/* Logic hiển thị theo trạng thái đăng nhập (Desktop) */}
                     {user ? (
-                        <div className="hidden md:flex items-center gap-4">
-                            <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors">
+                        <div className="relative hidden md:flex items-center">
+                            {/* Nút Toggle Dropdown thay vì chỉ hiện tên tĩnh */}
+                            <button 
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors"
+                            >
                                 {user.photoURL ? (
                                     <img src={user.photoURL} alt="Avatar" className="w-7 h-7 rounded-full border border-purple-500 object-cover" />
                                 ) : (
@@ -80,17 +85,52 @@ export default function Navbar() {
                                         {user.displayName?.charAt(0).toUpperCase() || "U"}
                                     </div>
                                 )}
-                                <span className="text-sm font-bold text-white max-w-25 truncate">
-                                    {user.displayName?.split(" ")[0] || "User"}
+                                <span className="text-sm font-bold text-white max-w-37.5 truncate">
+                                    {user.displayName || "User"}
                                 </span>
-                            </div>
-                            <button 
-                                onClick={logout}
-                                className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-full transition-all"
-                                title="Đăng xuất"
-                            >
-                                <LogOut size={18} />
+                                <ChevronDown size={16} className={`text-slate-400 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
                             </button>
+
+                            {/* Menu Dropdown - Chỉ hiện khi isDropdownOpen = true */}
+                            {isDropdownOpen && (
+                                <>
+                                    {/* Màn chắn vô hình toàn màn hình để bắt sự kiện click ra ngoài menu */}
+                                    <div 
+                                        className="fixed inset-0 z-40" 
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    ></div>
+                                    
+                                    <div className="absolute right-0 top-full mt-3 w-56 bg-[#0d0714]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl py-2 z-50 overflow-hidden transform transition-all">
+                                        {/* Phần Header của Dropdown */}
+                                        <div className="px-4 py-3 border-b border-white/5 mb-2">
+                                            <p className="text-sm font-bold text-white truncate">{user.displayName || "User"}</p>
+                                            <p className="text-xs text-slate-400 truncate mt-0.5">{user.email}</p>
+                                        </div>
+                                        
+                                        {/* Nút Trang Cá Nhân */}
+                                        <Link 
+                                            to="/profile" 
+                                            onClick={() => setIsDropdownOpen(false)}
+                                            className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                                        >
+                                            <User size={16} className="text-purple-400" />
+                                            Trang cá nhân
+                                        </Link>
+                                        
+                                        {/* Nút Đăng Xuất */}
+                                        <button 
+                                            onClick={() => {
+                                                logout();
+                                                setIsDropdownOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors text-left"
+                                        >
+                                            <LogOut size={16} />
+                                            Đăng xuất
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     ) : (
                         <Link 
@@ -125,8 +165,8 @@ export default function Navbar() {
                 
                 {/* Logic hiển thị theo trạng thái đăng nhập (Mobile) */}
                 {user ? (
-                    <div className="mt-4 pt-4 border-t border-white/5 flex flex-col gap-4">
-                        <div className="flex items-center gap-4 px-4 py-4 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
+                    <div className="mt-4 pt-4 border-t border-white/5 flex flex-col gap-3">
+                        <div className="flex items-center gap-4 px-4 py-4 bg-white/5 rounded-2xl border border-white/10 shadow-inner mb-2">
                             {user.photoURL ? (
                                 <img src={user.photoURL} alt="Avatar" className="w-12 h-12 rounded-full border-2 border-purple-500 object-cover" />
                             ) : (
@@ -139,9 +179,19 @@ export default function Navbar() {
                                 <p className="text-slate-400 text-xs font-medium truncate">{user.email}</p>
                             </div>
                         </div>
+
+                        {/* Nút Trang cá nhân trên Mobile */}
+                        <Link 
+                            to="/profile" 
+                            onClick={() => setOpenMobileMenu(false)}
+                            className="w-full py-3.5 bg-white/5 text-slate-200 border border-white/10 hover:bg-white/10 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
+                        >
+                            <User size={20} className="text-purple-400" /> Trang cá nhân
+                        </Link>
+
                         <button 
                             onClick={() => { logout(); setOpenMobileMenu(false); }}
-                            className="w-full py-4 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
+                            className="w-full py-3.5 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
                         >
                             <LogOut size={20} /> Đăng xuất
                         </button>
