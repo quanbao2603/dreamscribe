@@ -11,44 +11,47 @@ import LoadSaved from "./pages/editor/sections/LoadSaved";
 import NewStory from "./pages/editor/sections/NewStory";
 import { navLinks, authLinks, editorLinks } from "./data/NavLinks";
 import AuthTest from "./pages/test/Auth";
-import EmailAuthSuccess from "./pages/test/EmailAuthSuccess"
+import EmailAuthSuccess from "./pages/test/EmailAuthSuccess";
+import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
   return (
-    <div className="flex flex-col min-h-screen bg-white dark:bg-[#080313] transition-colors duration-500">
-      <Navbar />
-      
-      <main className="grow">
-        <Routes>
-          <Route path={navLinks[0].href} element={<Home />}>
-            <Route path={authLinks.login} element={<Login />} />
-            <Route path={authLinks.register} element={<Register />} />
-          </Route>
+    <AuthProvider>
+      <div className="flex flex-col min-h-screen bg-white dark:bg-[#080313] transition-colors duration-500">
+        <Navbar />
+        
+        <main className="grow">
+          <Routes>
+            <Route path={navLinks[0].href} element={<Home />}>
+              <Route path={authLinks.login} element={<Login />} />
+              <Route path={authLinks.register} element={<Register />} />
+            </Route>
 
-          <Route path={editorLinks.root} element={<Editor />}>
-            <Route index element={<div className="text-white">Chào mừng bạn đến với Workspace</div>} />
-            <Route path="create" element={<NewStory />} />
-            <Route path="load" element={<LoadSaved />} />
-            <Route path="import" element={<Import />} />
-            <Route path="apikey" element={<ApiKey />} />
-          </Route>
+            <Route path={editorLinks.root} element={<Editor />}>
+              <Route index element={<div className="text-white">Chào mừng bạn đến với Workspace</div>} />
+              <Route path="create" element={<NewStory />} />
+              <Route path="load" element={<LoadSaved />} />
+              <Route path="import" element={<Import />} />
+              <Route path="apikey" element={<ApiKey />} />
+            </Route>
 
-          <Route 
-            path={navLinks[1].href} 
-            element={<div className="pt-32 text-center text-white">Trang Tài Liệu đang phát triển...</div>} 
-          />
+            <Route 
+              path={navLinks[1].href} 
+              element={<div className="pt-32 text-center text-white">Trang Tài Liệu đang phát triển...</div>} 
+            />
 
-          <Route path="/test/auth" element={<AuthTest />} />
-          <Route path="/auth/email-success" element={<EmailAuthSuccess />} />
+            <Route path="/test/auth" element={<AuthTest />} />
+            <Route path="/auth/email-success" element={<EmailAuthSuccess />} />
 
-          <Route 
-            path="*" 
-            element={<div className="pt-32 text-center text-white text-2xl font-bold">404 - Trang không tồn tại</div>} 
-          />
-        </Routes>
-      </main>
+            <Route 
+              path="*" 
+              element={<div className="pt-32 text-center text-white text-2xl font-bold">404 - Trang không tồn tại</div>} 
+            />
+          </Routes>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </AuthProvider>
   );
 }

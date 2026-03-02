@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, X, User, Mail, Lock, ArrowLeft, ShieldCheck } from "lucide-react"; 
 import authVisual from "../../assets/login.png";
+import { useAuth } from "../../context/AuthContext";
 
 function cn(...classes: Array<string | false | undefined | null>) {
   return classes.filter(Boolean).join(" ");
@@ -9,6 +10,7 @@ function cn(...classes: Array<string | false | undefined | null>) {
 
 export default function Register() {
   const navigate = useNavigate();
+  const { login } = useAuth(); // Lấy hàm login từ Context
   
   const [step, setStep] = useState<1 | 2>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -99,10 +101,9 @@ export default function Register() {
       const data = await res.json();
       
       if (data.success) {
-        // Đã cập nhật chuyển hướng sang trang success và truyền kèm dữ liệu user
-        navigate("/auth/email-success", { 
-          state: { user: data.user } 
-        });
+        // Gọi hàm login để lưu Context, sau đó điều hướng về trang chủ thay vì /email-success
+        login(data.user);
+        navigate("/");
       } else {
         alert(data.error);
         setOtp(["", "", "", "", "", ""]);

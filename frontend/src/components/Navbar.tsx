@@ -1,10 +1,12 @@
-import { MenuIcon, XIcon, Moon, Sun } from "lucide-react";
+import { MenuIcon, XIcon, Moon, Sun, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { navLinks } from "../data/NavLinks";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
     const [openMobileMenu, setOpenMobileMenu] = useState(false);
+    const { user, logout } = useAuth(); // Lấy thông tin user từ Context
     
     const [isDarkMode, setIsDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -67,12 +69,37 @@ export default function Navbar() {
                         {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
 
-                    <Link 
-                        to="/auth/login" 
-                        className="hidden md:block px-6 py-2 bg-purple-600 hover:bg-purple-500 transition-all text-white rounded-lg font-semibold text-sm shadow-lg shadow-purple-500/20 text-center"
-                    >
-                        Login
-                    </Link>
+                    {/* Logic hiển thị theo trạng thái đăng nhập (Desktop) */}
+                    {user ? (
+                        <div className="hidden md:flex items-center gap-4">
+                            <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full cursor-pointer hover:bg-white/10 transition-colors">
+                                {user.photoURL ? (
+                                    <img src={user.photoURL} alt="Avatar" className="w-7 h-7 rounded-full border border-purple-500 object-cover" />
+                                ) : (
+                                    <div className="w-7 h-7 rounded-full bg-linear-to-tr from-purple-600 to-fuchsia-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
+                                        {user.displayName?.charAt(0).toUpperCase() || "U"}
+                                    </div>
+                                )}
+                                <span className="text-sm font-bold text-white max-w-25 truncate">
+                                    {user.displayName?.split(" ")[0] || "User"}
+                                </span>
+                            </div>
+                            <button 
+                                onClick={logout}
+                                className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-full transition-all"
+                                title="Đăng xuất"
+                            >
+                                <LogOut size={18} />
+                            </button>
+                        </div>
+                    ) : (
+                        <Link 
+                            to="/auth/login" 
+                            className="hidden md:block px-6 py-2 bg-purple-600 hover:bg-purple-500 transition-all text-white rounded-lg font-semibold text-sm shadow-lg shadow-purple-500/20 text-center"
+                        >
+                            Login
+                        </Link>
+                    )}
 
                     <button 
                         onClick={() => setOpenMobileMenu(!openMobileMenu)} 
@@ -96,13 +123,38 @@ export default function Navbar() {
                     </Link>
                 ))}
                 
-                <Link 
-                    to="/auth/login"
-                    onClick={() => setOpenMobileMenu(false)}
-                    className="w-full mt-4 py-4 bg-purple-600 text-white rounded-xl font-bold text-center"
-                >
-                    Login
-                </Link>
+                {/* Logic hiển thị theo trạng thái đăng nhập (Mobile) */}
+                {user ? (
+                    <div className="mt-4 pt-4 border-t border-white/5 flex flex-col gap-4">
+                        <div className="flex items-center gap-4 px-4 py-4 bg-white/5 rounded-2xl border border-white/10 shadow-inner">
+                            {user.photoURL ? (
+                                <img src={user.photoURL} alt="Avatar" className="w-12 h-12 rounded-full border-2 border-purple-500 object-cover" />
+                            ) : (
+                                <div className="w-12 h-12 rounded-full bg-linear-to-tr from-purple-600 to-fuchsia-600 flex items-center justify-center text-xl font-bold text-white shadow-md">
+                                    {user.displayName?.charAt(0).toUpperCase() || "U"}
+                                </div>
+                            )}
+                            <div className="flex-1 overflow-hidden">
+                                <p className="text-white text-lg font-bold truncate">{user.displayName || "User"}</p>
+                                <p className="text-slate-400 text-xs font-medium truncate">{user.email}</p>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={() => { logout(); setOpenMobileMenu(false); }}
+                            className="w-full py-4 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
+                        >
+                            <LogOut size={20} /> Đăng xuất
+                        </button>
+                    </div>
+                ) : (
+                    <Link 
+                        to="/auth/login"
+                        onClick={() => setOpenMobileMenu(false)}
+                        className="w-full mt-4 py-4 bg-purple-600 text-white rounded-xl font-bold text-center"
+                    >
+                        Login
+                    </Link>
+                )}
             </div>
         </nav>
     );

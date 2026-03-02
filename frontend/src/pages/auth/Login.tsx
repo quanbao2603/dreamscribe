@@ -4,6 +4,7 @@ import { Eye, EyeOff, X } from "lucide-react";
 import authVisual from "../../assets/login.png";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../firebase";
+import { useAuth } from "../../context/AuthContext";
 
 function cn(...classes: Array<string | false | undefined | null>) {
   return classes.filter(Boolean).join(" ");
@@ -22,10 +23,13 @@ function GoogleIcon() {
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth(); // Lấy hàm login từ Context
+  
   const [touched, setTouched] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const emailOk = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()), [email]);
   const passOk = useMemo(() => password.length >= 6, [password]);
@@ -39,10 +43,33 @@ export default function Login() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [navigate]);
 
-  const handleSubmit = () => {
+  // Nâng cấp: Tích hợp API gọi lên backend thay vì chỉ navigate
+  const handleSubmit = async () => {
     setTouched(true);
     if (!canSubmit) return;
-    navigate("/");
+    
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        login(data.user); // Lưu trạng thái
+        navigate("/");    // Trở về trang chủ
+      } else {
+        alert(data.error || "Đăng nhập thất bại");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi kết nối đến máy chủ");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -59,9 +86,11 @@ export default function Login() {
       const data = await response.json();
       
       if (data.success) {
-        navigate("/test/auth", { state: { user: data.user } });
+        login(data.user); // Lưu trạng thái
+        navigate("/");    // Trở về trang chủ
       } else {
         console.error(data.error);
+        alert(data.error || "Lỗi đăng nhập Google");
       }
     } catch (error) {
       console.error(error);
@@ -155,15 +184,15 @@ export default function Login() {
 
               <button
                 onClick={handleSubmit}
-                disabled={!canSubmit}
+                disabled={!canSubmit || isSubmitting}
                 className={cn(
-                  "w-full rounded-xl py-3.5 text-sm font-bold transition-all active:scale-[0.98]",
-                  canSubmit
+                  "w-full rounded-xl py-3.5 text-sm font-bold transition-all flex justify-center items-center active:scale-[0.98]",
+                  canSubmit && !isSubmitting
                     ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white shadow-lg shadow-purple-500/25 hover:opacity-90"
                     : "cursor-not-allowed bg-white/5 text-slate-600"
                 )}
               >
-                Đăng nhập
+                {isSubmitting ? <span className="w-5 h-5 border-2 border-slate-400 border-t-white rounded-full animate-spin" /> : "Đăng nhập"}
               </button>
 
               <div className="relative flex items-center gap-4 py-2">
