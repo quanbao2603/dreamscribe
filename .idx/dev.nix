@@ -16,6 +16,8 @@
   env = {
     PRISMA_CLI_QUERY_ENGINE_TYPE = "binary";
     PRISMA_CLIENT_ENGINE_TYPE = "binary";
+    # !!! QUAN TRỌNG: Thay thế giá trị này bằng Web API Key từ dự án Firebase của bạn
+    FIREBASE_API_KEY = "AIzaSyABt2ciPTX-Y5g17YjncNGplm0HyrP79zk";
     # KHÔNG NÊN đặt DATABASE_URL ở đây.
     # Hãy để DATABASE_URL trong file .env của bạn để bảo mật.
   };

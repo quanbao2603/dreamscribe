@@ -114,3 +114,64 @@ export const verifyOtpAndRegister = async (req, res) => {
     res.status(500).json({ success: false, error: 'Lỗi khi tạo tài khoản' });
   }
 };
+
+// === HÀM LOGIN MỚI BỔ SUNG ===
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, error: 'Vui lòng nhập email và mật khẩu' });
+  }
+
+  try {
+    const apiKey = process.env.FIREBASE_API_KEY;
+    
+    if (!apiKey) {
+      console.error("❌ Thiếu FIREBASE_API_KEY trong file .env của backend");
+      return res.status(500).json({ success: false, error: 'Lỗi cấu hình hệ thống' });
+    }
+
+    // Gửi request cho Firebase xác thực tài khoản & mật khẩu
+    const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        returnSecureToken: true
+      })
+    });
+
+    const data = await response.json();
+
+    // Xử lý nếu sai mật khẩu hoặc email
+    if (!response.ok) {
+      const errMsg = data.error?.message;
+      if (errMsg === 'INVALID_LOGIN_CREDENTIALS' || errMsg === 'INVALID_PASSWORD' || errMsg === 'EMAIL_NOT_FOUND') {
+        return res.status(400).json({ success: false, error: 'Email hoặc mật khẩu không chính xác' });
+      }
+      return res.status(400).json({ success: false, error: 'Đăng nhập thất bại. Vui lòng thử lại.' });
+    }
+
+    // Nếu Firebase cho phép qua -> Lấy thông tin user từ database Prisma bằng ID (localId)
+    const user = await prisma.user.findUnique({
+      where: { id: data.localId }
+    });
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Tài khoản chưa được đồng bộ vào Database' });
+    }
+
+    console.log(`✅ Đăng nhập thành công: ${email}`);
+    
+    // Trả user về cho Frontend để đưa vào Context
+    return res.status(200).json({
+      success: true,
+      user: user
+    });
+
+  } catch (error) {
+    console.error("❌ Lỗi server khi đăng nhập:", error);
+    return res.status(500).json({ success: false, error: 'Lỗi hệ thống máy chủ' });
+  }
+};
