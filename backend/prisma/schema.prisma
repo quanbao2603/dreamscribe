@@ -19,6 +19,7 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   stories     Story[]
+  apiKeys     ApiKey[]
 }
 
 model Story {
@@ -153,4 +154,16 @@ model CraftLesson {
   confidence Float    @default(1.0)
   lastSeenAt DateTime @default(now())
   version    Int      @default(1)
+}
+
+model ApiKey {
+  id        String   @id @default(uuid())
+  name      String   
+  agent     String   
+  role      String 
+  key       String   
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Xóa user -> tự động xóa key
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

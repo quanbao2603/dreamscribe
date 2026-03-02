@@ -1,10 +1,11 @@
-
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import admin from 'firebase-admin';
 import authRoutes from './auth/auth.routes.js';
 import serviceAccount from './serviceAccountKey.json' assert { type: "json" };
+// Dòng import sai đã bị xóa
+// import { saveApiKey, getApiKeys } from './src/editor/sections/apikey/ApiKey.js';
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -23,8 +24,11 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
 app.use('/api/auth', authRoutes);
+
+// Tạm thời vô hiệu hóa các route bị lỗi
+// app.post('/api/apikeys', saveApiKey);
+// app.get('/api/apikeys/:userId', getApiKeys); 
 
 app.post('/api/users/sync', async (req, res) => {
   const { uid, email, displayName, photoURL } = req.body;

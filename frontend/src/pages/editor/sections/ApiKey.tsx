@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Bot, PenTool, Tag, Key, Save, Plus } from 'lucide-react';
+import { useAuth } from '../../../context/AuthContext'; 
 
 export default function ApiKey() {
+  const { user } = useAuth(); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     agent: 'openai',
     role: 'writer',
@@ -11,6 +14,49 @@ export default function ApiKey() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // HÀM CALL API LƯU DỮ LIỆU
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // 1. Kiểm tra điều kiện
+    if (!user) {
+      alert("Bạn cần đăng nhập để lưu API Key!");
+      return;
+    }
+    if (!formData.name.trim() || !formData.key.trim()) {
+      alert("Vui lòng nhập Tên gợi nhớ và Mã API Key!");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // 2. Gọi API xuống Backend
+    try {
+      const response = await fetch("http://localhost:8080/api/apikeys", { // Cổng 8080 là cổng backend của bạn
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // Gửi kèm userId lấy từ Context
+        body: JSON.stringify({ ...formData, userId: user.id }),
+      });
+
+      const data = await response.json();
+
+      // 3. Xử lý kết quả trả về
+      if (data.success) {
+        alert("🎉 Lưu cấu hình API Key thành công!");
+        // Reset form để trống
+        setFormData({ ...formData, name: '', key: '' });
+      } else {
+        alert(data.error || "Có lỗi xảy ra khi lưu!");
+      }
+    } catch (error) {
+      console.error("Lỗi:", error);
+      alert("Lỗi kết nối đến máy chủ! Vui lòng kiểm tra lại Backend.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -28,7 +74,8 @@ export default function ApiKey() {
           <h3 className="text-lg font-semibold text-white">Thêm Key Mới</h3>
         </div>
 
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={(e) => e.preventDefault()}>
+        {/* THAY ĐỔI 1: Gắn sự kiện onSubmit vào form */}
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
           
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-slate-300 mb-2">
@@ -101,17 +148,27 @@ export default function ApiKey() {
               className="w-full p-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-600 outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
             />
             <p className="text-[11px] text-slate-500 mt-2">
-              * Key của bạn được mã hóa an toàn và chỉ lưu trữ trên thiết bị/trình duyệt của bạn.
+              * Mặc dù cảnh báo bảo mật, Key này sẽ được gửi lên và lưu trữ an toàn trong cơ sở dữ liệu để phục vụ cho các truy vấn AI của bạn.
             </p>
           </div>
 
           <div className="md:col-span-2 flex justify-end mt-2">
+            {/* THAY ĐỔI 2: Đổi type="button" thành type="submit" và xử lý trạng thái đang loading */}
             <button 
-              type="button"
-              className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-purple-500/20"
+              type="submit"
+              disabled={isSubmitting}
+              className={`flex items-center gap-2 px-6 py-3 font-semibold rounded-xl transition-colors shadow-lg shadow-purple-500/20 ${
+                isSubmitting ? 'bg-purple-600/50 text-slate-300 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-500 text-white'
+              }`}
             >
-              <Save size={18} />
-              <span>Lưu cấu hình</span>
+              {isSubmitting ? (
+                <span className="w-5 h-5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  <Save size={18} />
+                  <span>Lưu cấu hình</span>
+                </>
+              )}
             </button>
           </div>
 
