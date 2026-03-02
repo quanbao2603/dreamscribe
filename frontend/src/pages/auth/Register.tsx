@@ -99,7 +99,10 @@ export default function Register() {
       const data = await res.json();
       
       if (data.success) {
-        navigate("/auth/login");
+        // Đã cập nhật chuyển hướng sang trang success và truyền kèm dữ liệu user
+        navigate("/auth/email-success", { 
+          state: { user: data.user } 
+        });
       } else {
         alert(data.error);
         setOtp(["", "", "", "", "", ""]);

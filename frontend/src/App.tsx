@@ -11,6 +11,7 @@ import LoadSaved from "./pages/editor/sections/LoadSaved";
 import NewStory from "./pages/editor/sections/NewStory";
 import { navLinks, authLinks, editorLinks } from "./data/NavLinks";
 import AuthTest from "./pages/test/Auth";
+import EmailAuthSuccess from "./pages/test/EmailAuthSuccess"
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
           />
 
           <Route path="/test/auth" element={<AuthTest />} />
+          <Route path="/auth/email-success" element={<EmailAuthSuccess />} />
 
           <Route 
             path="*" 
