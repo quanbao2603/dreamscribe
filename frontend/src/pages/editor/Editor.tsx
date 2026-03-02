@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   PenTool, 
@@ -7,12 +7,12 @@ import {
   Key, 
   LogOut, 
   ChevronRight,
-  User,
   Settings
 } from 'lucide-react';
 import "../../layout/main.css";
 import "./Editor.css";
 import { editorLinks } from "../../data/NavLinks";
+import { useAuth } from "../../context/AuthContext";
 
 function cn(...classes: Array<string | false | undefined | null>) {
   return classes.filter(Boolean).join(" ");
@@ -21,40 +21,23 @@ function cn(...classes: Array<string | false | undefined | null>) {
 export default function Editor() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth(); // Lấy thông tin user
+
+  // BẢO VỆ ROUTE TẦNG LÕI: Chưa đăng nhập mà cố tình vào là đá về Login ngay lập tức!
+  if (!user) {
+    return <Navigate to="/auth/login" replace />;
+  }
+
   const menuItems = [
-    { 
-        id: 'dashboard', 
-        name: 'Tổng quan', 
-        href: editorLinks.root, 
-        icon: <LayoutDashboard size={18} /> 
-    },
-    { 
-        id: 'api-key', 
-        name: 'Cấu hình AI', 
-        href: editorLinks.apikey, 
-        icon: <Key size={18} /> 
-    },
-    { 
-        id: 'new-story', 
-        name: 'Viết truyện mới', 
-        href: editorLinks.create, 
-        icon: <PenTool size={18} /> 
-    },
-    { 
-        id: 'load-saved', 
-        name: 'Bản thảo đã lưu', 
-        href: editorLinks.load, 
-        icon: <Database size={18} /> 
-    },
-    { 
-        id: 'import', 
-        name: 'Nhập dữ liệu', 
-        href: editorLinks.import, 
-        icon: <Upload size={18} /> 
-    }
+    { id: 'dashboard', name: 'Tổng quan', href: editorLinks.root, icon: <LayoutDashboard size={18} /> },
+    { id: 'api-key', name: 'Cấu hình AI', href: editorLinks.apikey, icon: <Key size={18} /> },
+    { id: 'new-story', name: 'Viết truyện mới', href: editorLinks.create, icon: <PenTool size={18} /> },
+    { id: 'load-saved', name: 'Bản thảo đã lưu', href: editorLinks.load, icon: <Database size={18} /> },
+    { id: 'import', name: 'Nhập dữ liệu', href: editorLinks.import, icon: <Upload size={18} /> }
   ];
 
   const handleLogout = () => {
+    logout(); // Đăng xuất khỏi hệ thống
     navigate("/");
   };
 
@@ -101,22 +84,29 @@ export default function Editor() {
         <div className="sidebar-footer-container">
           <div className="sidebar-footer">
             <div className="user-profile-box flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-linear-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg">
-                  <User size={18} className="text-white" />
-              </div>
+              {/* Avatar Tác giả lấy từ user */}
+              {user.photoURL ? (
+                  <img src={user.photoURL} alt="Avatar" className="w-9 h-9 rounded-full border border-purple-500 object-cover" />
+              ) : (
+                  <div className="w-9 h-9 rounded-full bg-linear-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg text-white font-bold text-sm">
+                      {user.displayName?.charAt(0).toUpperCase() || "U"}
+                  </div>
+              )}
+              
+              {/* Tên Tác giả lấy từ user */}
               <div className="flex-1 overflow-hidden">
-                  <p className="text-xs font-bold text-white truncate text-left">Tác giả AI</p>
-                  <p className="text-[10px] text-purple-400 font-semibold uppercase tracking-wider text-left">Premium</p>
+                  <p className="text-xs font-bold text-white truncate text-left">{user.displayName || "Tác giả ẩn danh"}</p>
+                  <p className="text-[10px] text-purple-400 font-semibold uppercase tracking-wider text-left">{user.role || "Member"}</p>
               </div>
               <Settings size={14} className="text-slate-500 hover:text-white cursor-pointer" />
             </div>
             
             <button 
               onClick={handleLogout}
-              className="w-full sidebar-item rounded-xl text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-colors mt-2"
+              className="w-full sidebar-item rounded-xl text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-colors mt-2 cursor-pointer"
             >
               <LogOut size={18} />
-              <span className="font-semibold">Rời khỏi hệ thống</span>
+              <span className="font-semibold">Đăng xuất hệ thống</span>
             </button>
           </div>
         </div>

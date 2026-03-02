@@ -1,11 +1,26 @@
 // src/pages/home/Home.tsx
-import { Link, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import "../../layout/main.css"; 
 import "./Home.css"; 
 import Typewriter from "../../components/Typewriter"; 
 import { editorLinks } from "../../data/NavLinks";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Home() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // Hàm xử lý khi bấm nút "Bắt đầu viết ngay"
+  const handleStartWriting = () => {
+    if (user) {
+      // Đã đăng nhập -> Vào thẳng Editor
+      navigate(editorLinks.root);
+    } else {
+      // Chưa đăng nhập -> Chuyển hướng sang trang Login
+      navigate("/auth/login");
+    }
+  };
+
   return (
     <div className="home-container relative min-h-screen w-full overflow-hidden">
       
@@ -36,21 +51,18 @@ export default function Home() {
           cùng bạn dệt nên cuộc phiêu lưu không giới hạn, từ ý tưởng mơ hồ đến kiệt tác bất tận.
         </p>
 
-        {/* Nút bấm hành động */}
+        {/* Nút bấm hành động (Đã đổi Link thành button và gắn hàm kiểm tra) */}
         <div className="flex flex-col sm:flex-row items-center gap-6">
-          <Link 
-            to={editorLinks.root}
-            className="home-button w-full sm:w-auto px-10 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold text-base shadow-lg shadow-purple-500/30 transition-all text-center no-underline"
+          <button 
+            onClick={handleStartWriting}
+            className="home-button w-full sm:w-auto px-10 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold text-base shadow-lg shadow-purple-500/30 transition-all text-center no-underline cursor-pointer"
           >
             Bắt đầu viết ngay
-          </Link>
+          </button>
         </div>
       </div>
 
-      {/* 3. VỊ TRÍ HIỂN THỊ MODAL (CỰC KỲ QUAN TRỌNG)
-          Khi URL là /auth/login hoặc /auth/register, 
-          component Login/Register sẽ được vẽ tại đây và đè lên nội dung trên.
-      */}
+      {/* 3. VỊ TRÍ HIỂN THỊ MODAL */}
       <Outlet /> 
     </div>
   );
